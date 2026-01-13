@@ -1,0 +1,229 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Your Special Day 💖</title>
+<style>
+  body{
+    margin:0;
+    font-family:'Segoe UI',sans-serif;
+    height:100vh;
+    background:linear-gradient(180deg,#ffe6f0,#fbefff);
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    overflow:hidden;
+  }
+
+  .heart{
+    position:absolute;
+    color:#ff8fc7;
+    font-size:14px;
+    animation:float 10s linear infinite;
+    opacity:.6;
+  }
+  @keyframes float{
+    from{transform:translateY(110vh)}
+    to{transform:translateY(-10vh)}
+  }
+
+  #loading{
+    position:absolute;
+    inset:0;
+    display:flex;
+    flex-direction:column;
+    align-items:center;
+    justify-content:center;
+    background:linear-gradient(180deg,#ffe6f0,#fbefff);
+    z-index:10;
+  }
+
+  #loadingBox{
+    background:white;
+    padding:30px 40px;
+    border-radius:20px;
+    text-align:center;
+    box-shadow:0 10px 30px rgba(0,0,0,.15);
+  }
+
+  .card{
+    background:white;
+    padding:30px 25px 35px;
+    border-radius:22px;
+    width:90%;
+    max-width:360px;
+    box-shadow:0 15px 35px rgba(0,0,0,.2);
+    text-align:center;
+    display:none;
+    opacity:0;
+    transform:translateY(20px);
+    transition:opacity .6s ease, transform .6s ease;
+  }
+
+  .card.show{
+    display:block;
+    opacity:1;
+    transform:translateY(0);
+  }
+
+  h1{color:#ff5fa2;margin-bottom:10px;font-size:1.4rem}
+
+  .timer{
+    display:grid;
+    grid-template-columns:repeat(4,1fr);
+    gap:10px;
+    margin:15px 0;
+  }
+
+  .timeBox{
+    background:#fff0f7;
+    border-radius:14px;
+    padding:10px 5px;
+  }
+  .num{font-size:1.4rem;color:#ff4f9a;font-weight:bold}
+  .lbl{font-size:.7rem;opacity:.7}
+
+  .msg{font-size:.85rem;color:#555;margin-top:10px}
+
+  button{
+    margin-top:18px;
+    background:linear-gradient(90deg,#ff5fa2,#ff8fc7);
+    border:none;
+    color:white;
+    padding:10px 22px;
+    border-radius:20px;
+    font-size:.9rem;
+    cursor:pointer;
+    box-shadow:0 5px 15px rgba(255,95,162,.5);
+  }
+
+  #letter{
+    white-space:pre-wrap;
+    font-size:.9rem;
+    color:#444;
+    margin-top:10px;
+  }
+
+  #messageCard{
+    box-shadow:
+      0 0 20px rgba(255,95,162,.4),
+      0 0 40px rgba(255,143,199,.25),
+      0 20px 40px rgba(0,0,0,.25);
+  }
+</style>
+</head>
+<body>
+
+<div id="loading">
+  <div id="loadingBox">
+    <h1>Loading something special…</h1>
+    🎂 🎁 💖 🌹
+  </div>
+</div>
+
+<div class="card" id="countdownCard">
+  <h1>Your Special Day is Almost Here 💕</h1>
+  <div class="timer">
+    <div class="timeBox"><div class="num" id="d">0</div><div class="lbl">Days</div></div>
+    <div class="timeBox"><div class="num" id="h">0</div><div class="lbl">Hours</div></div>
+    <div class="timeBox"><div class="num" id="m">0</div><div class="lbl">Minutes</div></div>
+    <div class="timeBox"><div class="num" id="s">0</div><div class="lbl">Seconds</div></div>
+  </div>
+  <div class="msg" id="status">Just a little more… A small gift for my favorite person 💗</div>
+  <button id="nextBtn" style="display:none" onclick="goNext()">Next 💌</button>
+</div>
+
+<div class="card" id="messageCard">
+  <h1>For You 💖</h1>
+  <div id="letter"></div>
+</div>
+
+<audio id="bgMusic">
+  <source src="song.mp3" type="audio/mpeg">
+</audio>
+
+<script>
+  for(let i=0;i<25;i++){
+    const h=document.createElement('div');
+    h.className='heart';
+    h.innerHTML='❤';
+    h.style.left=Math.random()*100+'vw';
+    h.style.animationDuration=6+Math.random()*6+'s';
+    document.body.appendChild(h);
+  }
+
+  setTimeout(()=>{
+    document.getElementById('loading').style.display='none';
+    const c=document.getElementById('countdownCard');
+    c.style.display='block';
+    requestAnimationFrame(()=>c.classList.add('show'));
+  },3000);
+
+  function getTarget(){
+    const now=new Date();
+    let y=now.getFullYear();
+    let t=new Date(y,1,12);
+    if(now>t) t=new Date(y+1,1,12);
+    return t;
+  }
+
+  const target = getTarget();
+
+  const messageText = `Happy birthday to the person I love the most.
+You are the reason for my happiness, and I can never thank you enough for it.
+
+Always stay happy, my sweetheart… 😘
+Happy Birthday 💖`;
+
+  let typed=false;
+
+  function typeMessage(){
+    if(typed) return;
+    typed=true;
+    const el=document.getElementById('letter');
+    el.innerHTML='';
+    let i=0;
+    const interval=setInterval(()=>{
+      el.innerHTML+=messageText.charAt(i);
+      i++;
+      if(i>=messageText.length) clearInterval(interval);
+    },35);
+  }
+
+  function goNext(){
+    const c=document.getElementById('countdownCard');
+    const m=document.getElementById('messageCard');
+    const music=document.getElementById('bgMusic');
+
+    c.classList.remove('show');
+    setTimeout(()=>{
+      c.style.display='none';
+      m.style.display='block';
+      requestAnimationFrame(()=>m.classList.add('show'));
+      typeMessage();
+      music.play().catch(()=>{});
+    },600);
+  }
+
+  function tick(){
+    const now=new Date();
+    let diff=target-now;
+
+    if(diff<=0){
+      document.getElementById('status').innerText="It's time! 💖";
+      document.getElementById('nextBtn').style.display='inline-block';
+    }
+
+    const safe=Math.max(0,diff);
+    document.getElementById('d').innerText=Math.floor(safe/86400000);
+    document.getElementById('h').innerText=Math.floor(safe/3600000)%24;
+    document.getElementById('m').innerText=Math.floor(safe/60000)%60;
+    document.getElementById('s').innerText=Math.floor(safe/1000)%60;
+  }
+
+  tick();
+  setInterval(tick,1000);
+</script>
+</body>
+</html>
